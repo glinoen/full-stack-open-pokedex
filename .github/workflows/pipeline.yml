@@ -35,3 +35,4 @@ jobs:
           heroku_email: "juho.linden@gmail.com"
           healthcheck: "https://fspokedexoni.herokuapp.com/health"
           checkstring: "ok"
+          rollbackonhealthcheckfailed: true
