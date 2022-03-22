@@ -30,6 +30,14 @@ jobs:
           command: npm run test:e2e
           start: npm run start-prod
           wait-on: http://localhost:5000
+      - name: Post to discord on build fail
+        if: ${{ failure() }}
+        uses: rjstone/discord-webhook-notify@v1
+        with:
+            severity: info
+            details: Build failed!
+            webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+
       - name: deploy heroku
         if: ${{ github.event_name == 'push' && !contains(github.event.head_commit.message, '#skip') }}
         uses: akhileshns/heroku-deploy@v3.12.12 # This is the action
@@ -51,3 +59,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BUMP: patch
+      - name: Post to discord
+        uses: rjstone/discord-webhook-notify@v1
+        if: success()
+        with:
+            severity: info
+            details: A new build deployed!
+            webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
